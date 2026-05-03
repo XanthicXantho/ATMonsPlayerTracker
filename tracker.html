@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATM Star — Invite Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f1a;
+    --panel: #131626;
+    --border: #2a2f50;
+    --accent: #7c3aed;
+    --accent2: #06b6d4;
+    --star: #f59e0b;
+    --pending: #94a3b8;
+    --denied: #ef4444;
+    --accepted: #22c55e;
+    --text: #e2e8f0;
+    --muted: #64748b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    min-height: 100vh;
+    padding: 32px 20px;
+    overflow-x: hidden;
+    background:
+      radial-gradient(ellipse 90% 55% at 50% 110%, rgba(124,58,237,0.28) 0%, rgba(99,40,200,0.12) 35%, transparent 65%),
+      radial-gradient(ellipse 60% 35% at 50% 100%, rgba(245,158,11,0.13) 0%, transparent 55%),
+      linear-gradient(to top, #111228 0%, #0d0f1e 50%, #080a14 100%);
+  }
+
+  #glitter-canvas, #fog-canvas {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none; z-index: 0;
+  }
+
+  header, .stats-row, table, .discord-link, .footer {
+    position: relative; z-index: 1;
+  }
+
+  header { text-align: center; margin-bottom: 40px; }
+
+  .header-card {
+    display: inline-block;
+    background: rgba(0,0,0,0.18);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 24px 36px;
+    isolation: isolate;
+  }
+
+  .subtitle {
+    margin-top: 0; color: var(--accent2); font-size: 20px;
+    letter-spacing: 4px; text-shadow: 0 0 14px rgba(6,182,212,0.5);
+    font-family: 'VT323', monospace;
+  }
+
+  .stats-row-wrap {
+    position: relative; z-index: 1;
+    display: flex; justify-content: center; margin-bottom: 32px;
+  }
+  .stats-row {
+    display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+    background: rgba(0,0,0,0.18); backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px; padding: 12px 20px; isolation: isolate;
+  }
+
+  .stat-chip {
+    background: rgba(0,0,0,0.55); backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 4px; padding: 6px 16px; font-size: 16px;
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer; user-select: none;
+    transition: border-color 0.15s, background 0.15s, opacity 0.15s;
+    opacity: 0.45;
+  }
+  .stat-chip:hover { opacity: 0.75; }
+  .stat-chip.active { opacity: 1; }
+  .stat-chip-pending.active  { border-color: var(--pending); background: rgba(148,163,184,0.08); }
+  .stat-chip-denied.active   { border-color: var(--denied);  background: rgba(239,68,68,0.08); }
+  .stat-chip-accepted.active { border-color: var(--accepted);background: rgba(34,197,94,0.08); }
+  .stat-chip .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .dot-pending { background: var(--pending); box-shadow: 0 0 6px var(--pending); }
+  .dot-denied  { background: var(--denied);  box-shadow: 0 0 6px var(--denied); }
+  .dot-accepted{ background: var(--accepted);box-shadow: 0 0 6px var(--accepted); }
+
+  .table-card {
+    position: relative; z-index: 1;
+    width: 100%; max-width: 700px; margin: 0 auto;
+    background: rgba(0,0,0,0.40); backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px; overflow: hidden;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { border-bottom: 2px solid var(--accent); }
+  th {
+    font-family: 'Press Start 2P', monospace; font-size: 10px;
+    color: var(--accent2); text-shadow: 0 0 10px rgba(6,182,212,0.45);
+    text-align: left; padding: 8px 16px 12px; letter-spacing: 1px; text-transform: uppercase;
+  }
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s; animation: fadeIn 0.4s ease both;
+  }
+  tbody tr:nth-child(odd)  { background: rgba(255,255,255,0.02); }
+  tbody tr:nth-child(even) { background: rgba(0,0,0,0.22); }
+  tbody tr:hover { background: rgba(124,58,237,0.10) !important; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateX(-8px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  td { padding: 12px 16px; font-size: 22px; }
+  td:first-child { color: var(--text); }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 2px 12px; border-radius: 3px; font-size: 18px; letter-spacing: 1px;
+  }
+  .badge-pending  { background: rgba(148,163,184,0.1); border: 1px solid rgba(148,163,184,0.3); color: var(--pending); }
+  .badge-denied   { background: rgba(239,68,68,0.1);   border: 1px solid rgba(239,68,68,0.3);   color: var(--denied); }
+  .badge-accepted { background: rgba(34,197,94,0.1);   border: 1px solid rgba(34,197,94,0.3);   color: var(--accepted); }
+
+  .loading-row td {
+    text-align: center; color: var(--muted); font-size: 18px;
+    padding: 32px 16px; letter-spacing: 3px;
+  }
+  .loading-dot { animation: blink 1.2s infinite; }
+  .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes blink { 0%,80%,100%{opacity:0.2} 40%{opacity:1} }
+
+  .error-row td {
+    text-align: center; color: var(--denied); font-size: 16px;
+    padding: 24px 16px; letter-spacing: 2px;
+  }
+
+  .discord-link {
+    display: block; text-align: center; margin-top: 36px;
+    color: var(--muted); font-size: 16px; letter-spacing: 2px;
+  }
+  .discord-link a { color: var(--accent2); text-decoration: none; }
+  .discord-link a:hover { text-decoration: underline; }
+
+  .footer {
+    text-align: center; margin-top: 20px;
+    color: var(--muted); font-size: 14px; letter-spacing: 2px;
+  }
+
+  th.sortable { cursor: pointer; user-select: none; }
+  th.sortable:hover { color: #fff; }
+  th .sort-arrow { margin-left: 6px; font-size: 14px; display: inline-block; vertical-align: middle; }
+  th.sort-asc  .sort-arrow::after { content: '▲'; color: var(--star); text-shadow: 0 0 8px rgba(245,158,11,0.8); }
+  th.sort-desc .sort-arrow::after { content: '▼'; color: var(--star); text-shadow: 0 0 8px rgba(245,158,11,0.8); }
+  th:not(.sort-asc):not(.sort-desc) .sort-arrow::after { content: '▲▼'; letter-spacing: -2px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<canvas id="glitter-canvas"></canvas>
+<canvas id="fog-canvas"></canvas>
+
+<header>
+  <div class="header-card">
+    <div class="subtitle">// All The Mons — Hosted by Xantho //</div>
+    <div style="margin-top:10px; color:var(--star); font-family:'Press Start 2P',monospace; font-size:9px; letter-spacing:3px; text-shadow: 0 0 12px rgba(245,158,11,0.6);">INVITE TRACKER</div>
+  </div>
+</header>
+
+<div class="stats-row-wrap"><div class="stats-row" id="stats-row"></div></div>
+
+<div class="table-card">
+  <table>
+    <thead>
+      <tr>
+        <th style="width:40px">#</th>
+        <th class="sortable" id="th-name" onclick="cycleName()">Player <span class="sort-arrow"></span></th>
+        <th class="sortable" id="th-status" onclick="cycleStatus()">Status <span class="sort-arrow"></span></th>
+      </tr>
+    </thead>
+    <tbody id="tbody">
+      <tr class="loading-row">
+        <td colspan="3">
+          Loading<span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="discord-link">
+  Discord → <a href="https://discord.gg/hMpZFfnqh7" target="_blank">discord.gg/hMpZFfnqh7</a>
+</div>
+
+<div class="footer">// More invites coming soon //</div>
+
+<script>
+  // ── ⚙️  PASTE YOUR APPS SCRIPT WEB APP URL HERE ───────────────────────
+  const API_URL = 'https://script.google.com/macros/s/AKfycbwJWvy9xCr98wDe6eWeFfpGandP-60UImsIN1iG45feHao0AbdEFlhfpuSy_XIgNUIaVA/exec';
+  // ──────────────────────────────────────────────────────────────────────
+
+  const canvas = document.getElementById('glitter-canvas');
+  const ctx = canvas.getContext('2d');
+  const CHARS = ['✦'];
+  const COLORS = ['#f59e0b','#fcd34d','#f97316','#fbbf24','#fde68a'];
+  let flakes = [];
+
+  function resizeCanvas() {
+    const oldW = canvas.width  || window.innerWidth;
+    const oldH = canvas.height || window.innerHeight;
+    const newW = window.innerWidth; const newH = window.innerHeight;
+    const rx = newW / oldW; const ry = newH / oldH;
+    for (const f of flakes) { f.x *= rx; f.y *= ry; }
+    canvas.width = newW; canvas.height = newH;
+  }
+  function spawnFlake() {
+    return {
+      x: Math.random() * canvas.width, y: -20,
+      char: CHARS[0], color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      size: Math.random() * 16 + 14, speed: Math.random() * 0.6 + 0.25,
+      drift: (Math.random() - 0.5) * 0.4, rot: Math.random() * Math.PI * 2,
+      rotSpeed: (Math.random() - 0.5) * 0.02, opacity: Math.random() * 0.5 + 0.3,
+    };
+  }
+  function seedFlakes(count) {
+    for (let i = 0; i < count; i++) { const f = spawnFlake(); f.y = Math.random() * canvas.height; flakes.push(f); }
+  }
+  function animateGlitter() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (Math.random() < 0.10) flakes.push(spawnFlake());
+    flakes = flakes.filter(f => f.y < canvas.height + 30);
+    for (const f of flakes) {
+      f.y += f.speed; f.x += f.drift; f.rot += f.rotSpeed;
+      ctx.save(); ctx.globalAlpha = f.opacity; ctx.font = `${f.size}px serif`;
+      ctx.shadowColor = f.color; ctx.shadowBlur = f.size * 1.4; ctx.fillStyle = f.color;
+      ctx.translate(f.x, f.y); ctx.rotate(f.rot);
+      ctx.fillText(f.char, -f.size / 2, f.size / 2); ctx.restore();
+    }
+    requestAnimationFrame(animateGlitter);
+  }
+  resizeCanvas(); seedFlakes(18); animateGlitter();
+  window.addEventListener('resize', resizeCanvas);
+
+  const fogCanvas = document.getElementById('fog-canvas');
+  const fogCtx = fogCanvas.getContext('2d');
+  let fogPuffs = [];
+  function resizeFog() { fogCanvas.width = window.innerWidth; fogCanvas.height = window.innerHeight; }
+  function spawnPuff() {
+    const w = fogCanvas.width; const h = fogCanvas.height;
+    return {
+      x: Math.random() * w * 1.4 - w * 0.2, y: h + Math.random() * 40 + 60,
+      radius: Math.random() * 220 + 140, speedY: -(Math.random() * 0.22 + 0.08),
+      speedX: (Math.random() - 0.5) * 0.10, opacity: Math.random() * 0.22 + 0.12,
+      hue: Math.random() < 0.6 ? '100,60,220' : '180,100,20',
+    };
+  }
+  function seedFog(count) {
+    for (let i = 0; i < count; i++) { const p = spawnPuff(); p.y = fogCanvas.height * (1.0 + Math.random() * 0.5); fogPuffs.push(p); }
+  }
+  function animateFog() {
+    const w = fogCanvas.width; const h = fogCanvas.height;
+    fogCtx.clearRect(0, 0, w, h);
+    if (Math.random() < 0.04) fogPuffs.push(spawnPuff());
+    fogPuffs = fogPuffs.filter(p => p.y + p.radius > 0);
+    const off = document.createElement('canvas'); off.width = w; off.height = h;
+    const offCtx = off.getContext('2d');
+    for (const p of fogPuffs) {
+      p.y += p.speedY; p.x += p.speedX;
+      const heightFade = Math.max(0, Math.min(1, (p.y - h * 0.55) / (h * 0.25)));
+      const alpha = p.opacity * heightFade;
+      if (alpha <= 0) continue;
+      const grad = offCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
+      grad.addColorStop(0, `rgba(${p.hue}, ${alpha})`);
+      grad.addColorStop(0.5, `rgba(${p.hue}, ${alpha * 0.45})`);
+      grad.addColorStop(1, `rgba(${p.hue}, 0)`);
+      offCtx.fillStyle = grad; offCtx.beginPath(); offCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); offCtx.fill();
+    }
+    offCtx.globalCompositeOperation = 'destination-in';
+    const mask = offCtx.createLinearGradient(0, h * 0.42, 0, h * 0.72);
+    mask.addColorStop(0, 'rgba(0,0,0,0)'); mask.addColorStop(1, 'rgba(0,0,0,1)');
+    offCtx.fillStyle = mask; offCtx.fillRect(0, 0, w, h);
+    fogCtx.drawImage(off, 0, 0); requestAnimationFrame(animateFog);
+  }
+  resizeFog(); seedFog(14); animateFog();
+  window.addEventListener('resize', () => {
+    const oldW2 = fogCanvas.width || window.innerWidth;
+    const oldH2 = fogCanvas.height || window.innerHeight;
+    resizeFog();
+    const rx2 = fogCanvas.width / oldW2; const ry2 = fogCanvas.height / oldH2;
+    for (const p of fogPuffs) { p.x *= rx2; p.y *= ry2; }
+  });
+
+  let players = [];
+  const statusOrder = { adp: { accepted:0, denied:1, pending:2 }, pda: { pending:0, denied:1, accepted:2 } };
+  const badgeMap = {
+    pending:  '<span class="badge badge-pending">… Pending</span>',
+    denied:   '<span class="badge badge-denied">✗ Denied</span>',
+    accepted: '<span class="badge badge-accepted">✓ Accepted</span>',
+  };
+
+  let currentSort  = { col: null, dir: null };
+  let activeFilters = new Set();
+
+  function toggleFilter(status, shiftHeld) {
+    if (shiftHeld) {
+      if (activeFilters.has(status)) activeFilters.delete(status);
+      else activeFilters.add(status);
+    } else {
+      if (activeFilters.size === 1 && activeFilters.has(status)) activeFilters.clear();
+      else { activeFilters.clear(); activeFilters.add(status); }
+    }
+    render();
+  }
+
+  function applySort(col, dir) {
+    currentSort = { col, dir };
+    document.getElementById('th-name').className   = 'sortable' + (col==='name'   ? (dir==='asc'  ? ' sort-asc' : ' sort-desc') : '');
+    document.getElementById('th-status').className = 'sortable' + (col==='status' ? (dir==='adp'  ? ' sort-asc' : ' sort-desc') : '');
+    render();
+  }
+
+  function cycleName()   { if (currentSort.col==='name' && currentSort.dir==='asc') applySort('name','desc'); else applySort('name','asc'); }
+  function cycleStatus() { if (currentSort.col==='status' && currentSort.dir==='adp') applySort('status','pda'); else applySort('status','adp'); }
+
+  function getSorted() {
+    const showAll = activeFilters.size === 0;
+    let arr = players.filter(p => showAll || activeFilters.has(p.status));
+    const { col, dir } = currentSort;
+    if (!col) return arr;
+    if (col === 'name') {
+      arr.sort((a,b) => dir==='asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name));
+    } else {
+      const order = statusOrder[dir];
+      arr.sort((a,b) => order[a.status] - order[b.status]);
+    }
+    return arr;
+  }
+
+  function render() {
+    const sorted = getSorted();
+    document.getElementById('tbody').innerHTML = sorted.map((p, i) => `
+      <tr style="animation-delay:${i*0.05}s">
+        <td style="color:var(--muted)">${String(i+1).padStart(2,'0')}</td>
+        <td>${p.name}</td>
+        <td>${badgeMap[p.status] || badgeMap.pending}</td>
+      </tr>
+    `).join('');
+
+    const counts = { pending:0, denied:0, accepted:0 };
+    players.forEach(p => counts[p.status] !== undefined ? counts[p.status]++ : counts.pending++);
+    const showAll = activeFilters.size === 0;
+    document.getElementById('stats-row').innerHTML = `
+      <div class="stat-chip stat-chip-pending ${showAll || activeFilters.has('pending') ? 'active' : ''}" onclick="toggleFilter('pending', event.shiftKey)">
+        <span class="dot dot-pending"></span> ${counts.pending} Pending
+      </div>
+      <div class="stat-chip stat-chip-denied ${showAll || activeFilters.has('denied') ? 'active' : ''}" onclick="toggleFilter('denied', event.shiftKey)">
+        <span class="dot dot-denied"></span> ${counts.denied} Denied
+      </div>
+      <div class="stat-chip stat-chip-accepted ${showAll || activeFilters.has('accepted') ? 'active' : ''}" onclick="toggleFilter('accepted', event.shiftKey)">
+        <span class="dot dot-accepted"></span> ${counts.accepted} Accepted
+      </div>
+    `;
+  }
+
+  async function loadPlayers() {
+    try {
+      const res = await fetch(API_URL);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      players = await res.json();
+      render();
+    } catch (err) {
+      document.getElementById('tbody').innerHTML = `
+        <tr class="error-row">
+          <td colspan="3">⚠ Could not load data — check API_URL in the source</td>
+        </tr>`;
+    }
+  }
+
+  loadPlayers();
+  setInterval(loadPlayers, 60000);
+</script>
+</body>
+</html>
