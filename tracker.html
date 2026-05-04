@@ -305,9 +305,10 @@
   function resizeFog() { fogCanvas.width = window.innerWidth; fogCanvas.height = window.innerHeight; }
   function spawnPuff() {
     const w = fogCanvas.width; const h = fogCanvas.height;
+    const radius = Math.random() * 220 + 140;
     return {
-      x: Math.random() * w * 1.4 - w * 0.2, y: h + Math.random() * 40 + 60,
-      radius: Math.random() * 220 + 140, speedY: -(Math.random() * 0.22 + 0.08),
+      x: Math.random() * w * 1.4 - w * 0.2, y: h + radius + Math.random() * 40,
+      radius: radius, speedY: -(Math.random() * 0.22 + 0.08),
       speedX: (Math.random() - 0.5) * 0.10, opacity: Math.random() * 0.22 + 0.12,
       hue: Math.random() < 0.6 ? '100,60,220' : '180,100,20',
     };
