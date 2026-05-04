@@ -435,7 +435,7 @@
     } catch (err) {
       document.getElementById('tbody').innerHTML = `
         <tr class="error-row">
-          <td colspan="3">⚠ Could not load data — check API_URL in the source</td>
+          <td colspan="3">⚠ Could not load data <button onclick="loadPlayers()" style="margin-left:12px; font-family:'VT323',monospace; font-size:16px; color:var(--accent2); background:rgba(6,182,212,0.1); border:1px solid rgba(6,182,212,0.3); border-radius:4px; padding:4px 14px; cursor:pointer; letter-spacing:1px;">Retry</button></td>
         </tr>`;
     }
   }
