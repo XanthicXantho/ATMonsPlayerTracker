@@ -70,9 +70,13 @@ NAV BAR
   Sticky, top: 0, z-index: 10
   background: rgba(13,15,26, 0.80), backdrop-filter: blur(12px)
   border-bottom: 1px solid rgba(255,255,255,0.05)
-  Links use 'Press Start 2P' at 8px, letter-spacing: 2px
+  Links use 'Press Start 2P' at 8px, letter-spacing: 2px, inline-flex
   Active link: gold (--star) with gold border/glow
   Hover: cyan (--accent2) with cyan border/glow
+  Separators: 1px solid rgba(255,255,255,0.08) between each link (nav a + a)
+  External links (YouTube, Discord): include a 13x13 SVG external-link icon
+    - Icon is stroke-based, currentColor, opacity 0.5
+    - Positioned to the right of link text via inline-flex gap: 6px
 
 
 SECTION LABELS
@@ -96,6 +100,8 @@ Fog (canvas):
   Two hue sets: purple (100,60,220) and warm (180,100,20)
   Fades out above ~55% viewport height
   Spawns slowly (4% chance per frame)
+  Initial seed puffs are visible on load (placed near bottom edge)
+  New puffs spawn fully offscreen (y = viewport + radius) and rise into view
 
 Entrance animations:
   heroFade — card slides up and fades in over 0.8s
