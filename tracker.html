@@ -115,7 +115,10 @@
   }
   tbody tr {
     border-bottom: 1px solid var(--border);
-    transition: background 0.15s; animation: fadeIn 0.4s ease both;
+    transition: background 0.15s;
+  }
+  tbody.animate tr {
+    animation: fadeIn 0.4s ease both;
   }
   tbody tr:nth-child(odd)  { background: rgba(255,255,255,0.02); }
   tbody tr:nth-child(even) { background: rgba(0,0,0,0.22); }
@@ -325,14 +328,14 @@
       if (activeFilters.size === 1 && activeFilters.has(status)) activeFilters.clear();
       else { activeFilters.clear(); activeFilters.add(status); }
     }
-    render();
+    render(true);
   }
 
   function applySort(col, dir) {
     currentSort = { col, dir };
     document.getElementById('th-name').className   = 'sortable' + (col==='name'   ? (dir==='asc'  ? ' sort-asc' : ' sort-desc') : '');
     document.getElementById('th-status').className = 'sortable' + (col==='status' ? (dir==='adp'  ? ' sort-asc' : ' sort-desc') : '');
-    render();
+    render(true);
   }
 
   function cycleName()   { if (currentSort.col==='name' && currentSort.dir==='asc') applySort('name','desc'); else applySort('name','asc'); }
@@ -352,15 +355,18 @@
     return arr;
   }
 
-  function render() {
+  function render(animate) {
+    const tbody = document.getElementById('tbody');
     const sorted = getSorted();
-    document.getElementById('tbody').innerHTML = sorted.map((p, i) => `
+    tbody.innerHTML = sorted.map((p, i) => `
       <tr style="animation-delay:${i*0.05}s">
         <td style="color:var(--muted)">${String(i+1).padStart(2,'0')}</td>
         <td>${p.name}</td>
         <td>${badgeMap[p.status] || badgeMap.pending}</td>
       </tr>
     `).join('');
+    if (animate) tbody.classList.add('animate');
+    else tbody.classList.remove('animate');
 
     const counts = { pending:0, denied:0, accepted:0 };
     players.forEach(p => counts[p.status] !== undefined ? counts[p.status]++ : counts.pending++);
@@ -378,12 +384,14 @@
     `;
   }
 
+  let initialLoad = true;
   async function loadPlayers() {
     try {
       const res = await fetch(API_URL);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       players = await res.json();
-      render();
+      render(initialLoad);
+      initialLoad = false;
     } catch (err) {
       document.getElementById('tbody').innerHTML = `
         <tr class="error-row">
