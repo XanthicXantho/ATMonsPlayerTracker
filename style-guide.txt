@@ -1,0 +1,134 @@
+ATM STAR — STYLE GUIDE
+======================
+Last updated: 2026-05-04
+
+
+COLOR PALETTE
+-------------
+--bg        #0d0f1a     Deep space dark (page background base)
+--panel     #131626     Slightly lighter dark (unused reserve)
+--border    #2a2f50     Subtle borders between rows/elements
+--accent    #7c3aed     Purple — primary accent, headings, hover glows
+--accent2   #06b6d4     Cyan — secondary accent, subtitles, links
+--star      #f59e0b     Gold/amber — titles, star particles, active nav
+--pending   #94a3b8     Slate gray — pending status, neutral indicators
+--denied    #ef4444     Red — denied/error states
+--accepted  #22c55e     Green — accepted/success states
+--text      #e2e8f0     Light gray — main body text
+--muted     #64748b     Dim gray — secondary text, descriptions, footer
+
+Background uses a layered gradient:
+  1. Radial purple glow from bottom center
+  2. Radial gold glow from bottom center (subtle)
+  3. Linear gradient dark-to-darker, bottom-to-top
+
+
+TYPOGRAPHY
+----------
+Headings / Labels:
+  font-family: 'Press Start 2P', monospace
+  Typical sizes: 8-10px for nav/labels, 28px for hero title
+  Always uppercase, letter-spacing: 2-4px
+  Used sparingly — only for titles, labels, nav items
+
+Body / Content:
+  font-family: 'VT323', monospace
+  Base size: 20px on body
+  Used for all readable text, descriptions, table data
+
+Google Fonts import:
+  https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap
+
+
+CARD PATTERN (glassmorphism)
+----------------------------
+  background: rgba(0,0,0, 0.18–0.40)    (darker = more contrast)
+  backdrop-filter: blur(6px)
+  -webkit-backdrop-filter: blur(6px)
+  border: 1px solid rgba(255,255,255, 0.06–0.07)
+  border-radius: 14-16px
+  padding: 24-44px
+
+Interactive cards add:
+  transition: border-color 0.25s, background 0.25s, transform 0.2s
+  On hover: border-color: var(--accent), background: rgba(124,58,237,0.10), translateY(-4px)
+
+
+BADGE PATTERN (status indicators)
+----------------------------------
+  display: inline-flex; align-items: center; gap: 6px
+  padding: 2px 12px; border-radius: 3px
+  font-size: 18px; letter-spacing: 1px
+
+  Pending:   bg rgba(148,163,184,0.1), border rgba(148,163,184,0.3), color var(--pending)
+  Denied:    bg rgba(239,68,68,0.1),   border rgba(239,68,68,0.3),   color var(--denied)
+  Accepted:  bg rgba(34,197,94,0.1),   border rgba(34,197,94,0.3),   color var(--accepted)
+
+
+NAV BAR
+-------
+  Sticky, top: 0, z-index: 10
+  background: rgba(13,15,26, 0.80), backdrop-filter: blur(12px)
+  border-bottom: 1px solid rgba(255,255,255,0.05)
+  Links use 'Press Start 2P' at 8px, letter-spacing: 2px
+  Active link: gold (--star) with gold border/glow
+  Hover: cyan (--accent2) with cyan border/glow
+
+
+SECTION LABELS
+--------------
+  Format: // LABEL TEXT //
+  Font: 'Press Start 2P' at 10px
+  Color: var(--accent) with purple text-shadow
+  letter-spacing: 4px, centered
+
+
+ANIMATIONS & EFFECTS
+--------------------
+Glitter stars (canvas):
+  Gold-toned star characters (✦) falling slowly
+  Colors cycle through: #f59e0b, #fcd34d, #f97316, #fbbf24, #fde68a
+  Soft glow via shadowBlur, gentle rotation and drift
+  ~18 seeded on load, new ones spawn at 10% chance per frame
+
+Fog (canvas):
+  Radial gradient puffs rising from bottom
+  Two hue sets: purple (100,60,220) and warm (180,100,20)
+  Fades out above ~55% viewport height
+  Spawns slowly (4% chance per frame)
+
+Entrance animations:
+  heroFade — card slides up and fades in over 0.8s
+  cardFade — hub cards stagger in with 0.1s delay increments
+  fadeIn   — table rows slide in from left (tracker)
+
+
+LAYOUT
+------
+  Max content width: 700-820px, centered with margin: 0 auto
+  Section padding: ~60-64px bottom between sections
+  Responsive breakpoints:
+    600px — smaller fonts, 2-column card grid, compact padding
+    380px — single-column card grid
+
+
+SPACING CONVENTIONS
+-------------------
+  Nav padding: 12px 20px
+  Hero card padding: 44px 52px (desktop), 30px 24px (mobile)
+  Hub cards padding: 30px 18px
+  Updates card padding: 28px 32px
+  Section gap between label and content: 24px
+  Footer padding: 12px 20px 40px
+
+
+NOTES FOR FUTURE EDITS
+-----------------------
+  - All colors are CSS custom properties in :root — change once, updates everywhere
+  - Fonts load from Google Fonts — swap the import URL to change typefaces
+  - New pages should include the same nav, canvas effects, and :root variables
+  - The hub grid auto-fits cards — just add more <a class="hub-card"> elements
+  - The updates section is a placeholder — replace the inner content freely
+  - HTML comment in index.html marks where to add future sections
+  - External links use target="_blank" rel="noopener"
+  - Internal links are relative paths (e.g., tracker.html)
