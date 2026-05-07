@@ -3,192 +3,154 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ATM Star — Invite Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap" rel="stylesheet">
+<title>ATM — Invite Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0d0f1a;
-    --panel: #131626;
-    --border: #2a2f50;
-    --accent: #7c3aed;
-    --accent2: #06b6d4;
-    --star: #f59e0b;
+    --bg: #101116;
+    --surface: #18191f;
+    --border: #26272e;
+    --accent: #d4a053;
+    --link: #7ba4c9;
+    --text: #d4d4d8;
+    --muted: #6b6d76;
     --pending: #94a3b8;
     --denied: #ef4444;
     --accepted: #22c55e;
-    --text: #e2e8f0;
-    --muted: #64748b;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   body {
-    background: var(--bg);
+    background: linear-gradient(180deg, #0a0c16 0%, #0d0f1a 40%, #111228 100%);
     color: var(--text);
-    font-family: 'VT323', monospace;
-    font-size: 20px;
+    font-family: 'Outfit', -apple-system, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
     min-height: 100vh;
-    padding: 32px 20px;
     overflow-x: hidden;
-    background:
-      radial-gradient(ellipse 90% 55% at 50% 110%, rgba(124,58,237,0.28) 0%, rgba(99,40,200,0.12) 35%, transparent 65%),
-      radial-gradient(ellipse 60% 35% at 50% 100%, rgba(245,158,11,0.13) 0%, transparent 55%),
-      linear-gradient(to top, #111228 0%, #0d0f1e 50%, #080a14 100%);
   }
-
-  #glitter-canvas, #fog-canvas {
+  #glitter-canvas {
     position: fixed; top: 0; left: 0;
     width: 100%; height: 100%;
     pointer-events: none; z-index: 0;
   }
-
-  header, .stats-row, table, .discord-link, .footer, nav {
+  nav, header, .stats-row-wrap, .table-card, .discord-link, .footer {
     position: relative; z-index: 1;
   }
 
   nav {
     position: sticky; top: 0; z-index: 10;
     display: flex; justify-content: center; gap: 0;
-    padding: 12px 20px;
-    background: rgba(13,15,26,0.80);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    flex-wrap: wrap;
-    margin: -32px -20px 32px;
+    padding: 0;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
   }
   nav a {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 8px; color: var(--muted);
-    text-decoration: none; letter-spacing: 2px;
-    padding: 6px 14px; border-radius: 4px;
-    border: 1px solid transparent;
-    transition: color 0.2s, border-color 0.2s, background 0.2s;
-    display: inline-flex; align-items: center; gap: 6px;
-  }
-  nav a + a {
-    border-left: 1px solid rgba(255,255,255,0.08);
-    border-radius: 4px;
-    margin-left: 4px;
-    padding-left: 18px;
+    font-weight: 500;
+    font-size: 13px; color: var(--muted);
+    text-decoration: none; letter-spacing: 0.5px;
+    padding: 14px 20px;
+    transition: color 0.15s;
+    display: inline-flex; align-items: center; gap: 5px;
   }
   nav a .ext-icon {
-    width: 13px; height: 13px;
+    width: 11px; height: 11px;
     fill: none; stroke: currentColor;
     stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-    opacity: 0.5;
-    flex-shrink: 0;
+    opacity: 0.4;
   }
-  nav a:hover {
-    color: var(--accent2);
-    border-color: rgba(6,182,212,0.3);
-    background: rgba(6,182,212,0.06);
-    text-shadow: 0 0 10px rgba(6,182,212,0.4);
-  }
-  nav a.active {
-    color: var(--star);
-    border-color: rgba(245,158,11,0.3);
-    background: rgba(245,158,11,0.06);
-    text-shadow: 0 0 10px rgba(245,158,11,0.4);
-  }
+  nav a:hover { color: var(--text); }
+  nav a.active { color: var(--accent); }
 
-  header { text-align: center; margin-bottom: 40px; }
-
-  .header-card {
-    display: inline-block;
-    background: rgba(0,0,0,0.18);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 16px;
-    padding: 24px 36px;
-    isolation: isolate;
+  header { text-align: center; padding: 48px 20px 32px; }
+  .header-title {
+    font-weight: 600; font-size: 24px;
+    color: var(--text); letter-spacing: -0.3px;
   }
-
-  .subtitle {
-    margin-top: 0; color: var(--accent2); font-size: 20px;
-    letter-spacing: 4px; text-shadow: 0 0 14px rgba(6,182,212,0.5);
-    font-family: 'VT323', monospace;
+  .header-title span { color: var(--accent); }
+  .header-sub {
+    margin-top: 8px;
+    font-weight: 300; font-size: 15px;
+    color: var(--muted);
   }
 
   .stats-row-wrap {
-    position: relative; z-index: 1;
-    display: flex; justify-content: center; margin-bottom: 32px;
+    display: flex; justify-content: center;
+    padding: 0 20px 24px;
   }
   .stats-row {
-    display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center;
-    background: rgba(0,0,0,0.18); backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 14px; padding: 12px 20px; isolation: isolate;
+    display: inline-flex; gap: 8px; flex-wrap: wrap; justify-content: center;
   }
-
   .stat-chip {
-    background: rgba(0,0,0,0.55); backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(255,255,255,0.10);
-    border-radius: 4px; padding: 6px 16px; font-size: 16px;
-    display: flex; align-items: center; gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 13px; font-weight: 500;
+    display: flex; align-items: center; gap: 7px;
     cursor: pointer; user-select: none;
-    transition: border-color 0.15s, background 0.15s, opacity 0.15s;
+    transition: border-color 0.15s, opacity 0.15s;
     opacity: 0.45;
   }
-  .stat-chip:hover { opacity: 0.75; }
+  .stat-chip:hover { opacity: 0.7; }
   .stat-chip.active { opacity: 1; }
-  .stat-chip-pending.active  { border-color: var(--pending); background: rgba(148,163,184,0.08); }
-  .stat-chip-denied.active   { border-color: var(--denied);  background: rgba(239,68,68,0.08); }
-  .stat-chip-accepted.active { border-color: var(--accepted);background: rgba(34,197,94,0.08); }
-  .stat-chip .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-  .dot-pending { background: var(--pending); box-shadow: 0 0 6px var(--pending); }
-  .dot-denied  { background: var(--denied);  box-shadow: 0 0 6px var(--denied); }
-  .dot-accepted{ background: var(--accepted);box-shadow: 0 0 6px var(--accepted); }
+  .stat-chip-pending.active  { border-color: var(--pending); }
+  .stat-chip-denied.active   { border-color: var(--denied); }
+  .stat-chip-accepted.active { border-color: var(--accepted); }
+  .stat-chip .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+  .dot-pending  { background: var(--pending); }
+  .dot-denied   { background: var(--denied); }
+  .dot-accepted { background: var(--accepted); }
 
   .table-card {
-    position: relative; z-index: 1;
-    width: 100%; max-width: 700px; margin: 0 auto;
-    background: rgba(0,0,0,0.40); backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 14px; overflow: hidden;
+    width: 100%; max-width: 640px; margin: 0 auto;
+    padding: 0 20px 48px;
+  }
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
   }
 
   table { width: 100%; border-collapse: collapse; }
-  thead tr { border-bottom: 2px solid var(--accent); }
+  thead tr { border-bottom: 1px solid var(--border); }
   th {
-    font-family: 'Press Start 2P', monospace; font-size: 10px;
-    color: var(--accent2); text-shadow: 0 0 10px rgba(6,182,212,0.45);
-    text-align: left; padding: 8px 16px 12px; letter-spacing: 1px; text-transform: uppercase;
+    font-weight: 600; font-size: 12px;
+    color: var(--muted);
+    text-align: left; padding: 10px 16px;
+    letter-spacing: 0.5px; text-transform: uppercase;
   }
   tbody tr {
     border-bottom: 1px solid var(--border);
     transition: background 0.15s;
   }
   tbody.animate tr {
-    animation: fadeIn 0.4s ease both;
+    animation: fadeIn 0.3s ease both;
   }
-  tbody tr:nth-child(odd)  { background: rgba(255,255,255,0.02); }
-  tbody tr:nth-child(even) { background: rgba(0,0,0,0.22); }
-  tbody tr:hover { background: rgba(124,58,237,0.10) !important; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,0.02); }
 
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateX(-8px); }
+    from { opacity: 0; transform: translateX(-6px); }
     to   { opacity: 1; transform: translateX(0); }
   }
 
-  td { padding: 12px 16px; font-size: 22px; }
-  td:first-child { color: var(--text); }
+  td { padding: 10px 16px; font-size: 15px; }
+  td:first-child { color: var(--muted); font-weight: 300; }
 
   .badge {
     display: inline-flex; align-items: center; gap: 6px;
-    padding: 2px 12px; border-radius: 3px; font-size: 18px; letter-spacing: 1px;
+    padding: 2px 10px; border-radius: 4px;
+    font-size: 13px; font-weight: 500;
   }
-  .badge-pending  { background: rgba(148,163,184,0.1); border: 1px solid rgba(148,163,184,0.3); color: var(--pending); }
-  .badge-denied   { background: rgba(239,68,68,0.1);   border: 1px solid rgba(239,68,68,0.3);   color: var(--denied); }
-  .badge-accepted { background: rgba(34,197,94,0.1);   border: 1px solid rgba(34,197,94,0.3);   color: var(--accepted); }
+  .badge-pending  { background: rgba(148,163,184,0.08); border: 1px solid rgba(148,163,184,0.2); color: var(--pending); }
+  .badge-denied   { background: rgba(239,68,68,0.08);   border: 1px solid rgba(239,68,68,0.2);   color: var(--denied); }
+  .badge-accepted { background: rgba(34,197,94,0.08);   border: 1px solid rgba(34,197,94,0.2);   color: var(--accepted); }
 
   .loading-row td {
-    text-align: center; color: var(--muted); font-size: 18px;
-    padding: 32px 16px; letter-spacing: 3px;
+    text-align: center; color: var(--muted);
+    font-size: 14px; font-weight: 300;
+    padding: 32px 16px;
   }
   .loading-dot { animation: blink 1.2s infinite; }
   .loading-dot:nth-child(2) { animation-delay: 0.2s; }
@@ -196,172 +158,129 @@
   @keyframes blink { 0%,80%,100%{opacity:0.2} 40%{opacity:1} }
 
   .error-row td {
-    text-align: center; color: var(--denied); font-size: 16px;
-    padding: 24px 16px; letter-spacing: 2px;
+    text-align: center; color: var(--denied);
+    font-size: 14px; padding: 24px 16px;
   }
 
   .discord-link {
-    display: block; text-align: center; margin-top: 36px;
-    color: var(--muted); font-size: 16px; letter-spacing: 2px;
+    display: block; text-align: center;
+    padding: 0 20px;
+    color: var(--muted); font-size: 13px;
   }
-  .discord-link a { color: var(--accent2); text-decoration: none; }
+  .discord-link a { color: var(--link); text-decoration: none; }
   .discord-link a:hover { text-decoration: underline; }
 
   .footer {
-    text-align: center; margin-top: 20px;
-    color: var(--muted); font-size: 14px; letter-spacing: 2px;
+    text-align: center; margin-top: 16px;
+    padding: 0 20px 48px;
+    color: var(--muted); font-size: 13px; font-weight: 300;
   }
 
   th.sortable { cursor: pointer; user-select: none; }
-  th.sortable:hover { color: #fff; }
-  th .sort-arrow { margin-left: 6px; font-size: 14px; display: inline-block; vertical-align: middle; }
-  th.sort-asc  .sort-arrow::after { content: '▲'; color: var(--star); text-shadow: 0 0 8px rgba(245,158,11,0.8); }
-  th.sort-desc .sort-arrow::after { content: '▼'; color: var(--star); text-shadow: 0 0 8px rgba(245,158,11,0.8); }
-  th:not(.sort-asc):not(.sort-desc) .sort-arrow::after { content: '▲▼'; letter-spacing: -2px; color: var(--muted); }
+  th.sortable:hover { color: var(--text); }
+  th .sort-arrow { margin-left: 5px; font-size: 12px; display: inline-block; vertical-align: middle; }
+  th.sort-asc  .sort-arrow::after { content: '\25B2'; color: var(--accent); }
+  th.sort-desc .sort-arrow::after { content: '\25BC'; color: var(--accent); }
+  th:not(.sort-asc):not(.sort-desc) .sort-arrow::after { content: '\25B2\25BC'; letter-spacing: -2px; color: var(--muted); }
+
+  @media (max-width: 600px) {
+    header { padding: 32px 16px 24px; }
+    .header-title { font-size: 20px; }
+    .stat-chip { font-size: 12px; padding: 5px 12px; }
+    nav a { font-size: 12px; padding: 12px 14px; }
+  }
 </style>
 </head>
 <body>
 
 <canvas id="glitter-canvas"></canvas>
-<canvas id="fog-canvas"></canvas>
 
 <nav>
-  <a href="./">HOME</a>
-  <a href="tracker.html" class="active">ATM</a>
-  <a href="https://www.youtube.com/@Xantho6749" target="_blank" rel="noopener">YOUTUBE<svg class="ext-icon" viewBox="0 0 18 18"><path d="M14 4L7 11"/><path d="M14 9V4H9"/><path d="M4 4H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-1"/></svg></a>
-  <a href="https://discord.gg/hMpZFfnqh7" target="_blank" rel="noopener">DISCORD<svg class="ext-icon" viewBox="0 0 18 18"><path d="M14 4L7 11"/><path d="M14 9V4H9"/><path d="M4 4H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-1"/></svg></a>
+  <a href="./">Home</a>
+  <a href="tracker.html" class="active">Tracker</a>
+  <a href="https://www.youtube.com/@Xantho6749" target="_blank" rel="noopener">YouTube<svg class="ext-icon" viewBox="0 0 18 18"><path d="M14 4L7 11"/><path d="M14 9V4H9"/><path d="M4 4H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-1"/></svg></a>
+  <a href="https://discord.gg/hMpZFfnqh7" target="_blank" rel="noopener">Discord<svg class="ext-icon" viewBox="0 0 18 18"><path d="M14 4L7 11"/><path d="M14 9V4H9"/><path d="M4 4H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-1"/></svg></a>
 </nav>
 
 <header>
-  <div class="header-card">
-    <div class="subtitle">// All The Mons — Hosted by Xantho //</div>
-    <div style="margin-top:10px; color:var(--star); font-family:'Press Start 2P',monospace; font-size:9px; letter-spacing:3px; text-shadow: 0 0 12px rgba(245,158,11,0.6);">INVITE TRACKER</div>
-  </div>
+  <div class="header-title"><span>Invite Tracker</span></div>
+  <div class="header-sub">All The Mons — Hosted by Xantho</div>
 </header>
 
 <div class="stats-row-wrap"><div class="stats-row" id="stats-row"></div></div>
 
 <div class="table-card">
-  <table>
-    <thead>
-      <tr>
-        <th style="width:40px">#</th>
-        <th class="sortable" id="th-name" onclick="cycleName()">Player <span class="sort-arrow"></span></th>
-        <th class="sortable" id="th-status" onclick="cycleStatus()">Status <span class="sort-arrow"></span></th>
-      </tr>
-    </thead>
-    <tbody id="tbody">
-      <tr class="loading-row">
-        <td colspan="3">
-          Loading<span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:40px">#</th>
+          <th class="sortable" id="th-name" onclick="cycleName()">Player <span class="sort-arrow"></span></th>
+          <th class="sortable" id="th-status" onclick="cycleStatus()">Status <span class="sort-arrow"></span></th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+        <tr class="loading-row">
+          <td colspan="3">
+            Loading<span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <div class="discord-link">
-  Discord → <a href="https://discord.gg/hMpZFfnqh7" target="_blank">discord.gg/hMpZFfnqh7</a>
+  Discord &rarr; <a href="https://discord.gg/hMpZFfnqh7" target="_blank">discord.gg/hMpZFfnqh7</a>
 </div>
 
-<div class="footer">// More invites coming soon //</div>
+<div class="footer">More invites coming soon</div>
 
 <script>
-  // ── ⚙️  PASTE YOUR APPS SCRIPT WEB APP URL HERE ───────────────────────
   const API_URL = 'https://script.google.com/macros/s/AKfycbzbDAYnkHHb0ujLSZ7Kr4cu2dOVJ1_lfmzbRJ0FGlMrM2puYEBcpi6vzfz0T4QgWW8Hgg/exec';
-  // ──────────────────────────────────────────────────────────────────────
 
   const canvas = document.getElementById('glitter-canvas');
   const ctx = canvas.getContext('2d');
-  const CHARS = ['✦'];
-  const COLORS = ['#f59e0b','#fcd34d','#f97316','#fbbf24','#fde68a'];
+  const COLORS = ['#f59e0b','#fcd34d','#fbbf24'];
   let flakes = [];
 
   function resizeCanvas() {
-    const oldW = canvas.width  || window.innerWidth;
+    const oldW = canvas.width || window.innerWidth;
     const oldH = canvas.height || window.innerHeight;
-    const newW = window.innerWidth; const newH = window.innerHeight;
-    const rx = newW / oldW; const ry = newH / oldH;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const rx = canvas.width / oldW, ry = canvas.height / oldH;
     for (const f of flakes) { f.x *= rx; f.y *= ry; }
-    canvas.width = newW; canvas.height = newH;
   }
   function spawnFlake() {
     return {
       x: Math.random() * canvas.width, y: -20,
-      char: CHARS[0], color: COLORS[Math.floor(Math.random() * COLORS.length)],
-      size: Math.random() * 16 + 14, speed: Math.random() * 0.6 + 0.25,
-      drift: (Math.random() - 0.5) * 0.4, rot: Math.random() * Math.PI * 2,
-      rotSpeed: (Math.random() - 0.5) * 0.02, opacity: Math.random() * 0.5 + 0.3,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      size: Math.random() * 10 + 8, speed: Math.random() * 0.3 + 0.15,
+      drift: (Math.random() - 0.5) * 0.2, rot: Math.random() * Math.PI * 2,
+      rotSpeed: (Math.random() - 0.5) * 0.01, opacity: Math.random() * 0.3 + 0.15,
     };
   }
-  function seedFlakes(count) {
-    for (let i = 0; i < count; i++) { const f = spawnFlake(); f.y = Math.random() * canvas.height; flakes.push(f); }
+  function seedFlakes(n) {
+    for (let i = 0; i < n; i++) { const f = spawnFlake(); f.y = Math.random() * canvas.height; flakes.push(f); }
   }
   function animateGlitter() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    if (Math.random() < 0.10) flakes.push(spawnFlake());
+    if (Math.random() < 0.03) flakes.push(spawnFlake());
     flakes = flakes.filter(f => f.y < canvas.height + 30);
     for (const f of flakes) {
       f.y += f.speed; f.x += f.drift; f.rot += f.rotSpeed;
-      ctx.save(); ctx.globalAlpha = f.opacity; ctx.font = `${f.size}px serif`;
-      ctx.shadowColor = f.color; ctx.shadowBlur = f.size * 1.4; ctx.fillStyle = f.color;
+      ctx.save(); ctx.globalAlpha = f.opacity;
+      ctx.font = `${f.size}px serif`;
+      ctx.fillStyle = f.color;
       ctx.translate(f.x, f.y); ctx.rotate(f.rot);
-      ctx.fillText(f.char, -f.size / 2, f.size / 2); ctx.restore();
+      ctx.fillText('✦', -f.size / 2, f.size / 2);
+      ctx.restore();
     }
     requestAnimationFrame(animateGlitter);
   }
-  resizeCanvas(); seedFlakes(18); animateGlitter();
+  resizeCanvas(); seedFlakes(6); animateGlitter();
   window.addEventListener('resize', resizeCanvas);
-
-  const fogCanvas = document.getElementById('fog-canvas');
-  const fogCtx = fogCanvas.getContext('2d');
-  let fogPuffs = [];
-  function resizeFog() { fogCanvas.width = window.innerWidth; fogCanvas.height = window.innerHeight; }
-  function spawnPuff() {
-    const w = fogCanvas.width; const h = fogCanvas.height;
-    const radius = Math.random() * 220 + 140;
-    return {
-      x: Math.random() * w * 1.4 - w * 0.2, y: h + radius + Math.random() * 40,
-      radius: radius, speedY: -(Math.random() * 0.22 + 0.08),
-      speedX: (Math.random() - 0.5) * 0.10, opacity: Math.random() * 0.22 + 0.12,
-      hue: Math.random() < 0.6 ? '100,60,220' : '180,100,20',
-    };
-  }
-  function seedFog(count) {
-    for (let i = 0; i < count; i++) { const p = spawnPuff(); p.y = fogCanvas.height * (1.0 + Math.random() * 0.5); fogPuffs.push(p); }
-  }
-  function animateFog() {
-    const w = fogCanvas.width; const h = fogCanvas.height;
-    fogCtx.clearRect(0, 0, w, h);
-    if (Math.random() < 0.04) fogPuffs.push(spawnPuff());
-    fogPuffs = fogPuffs.filter(p => p.y + p.radius > 0);
-    const off = document.createElement('canvas'); off.width = w; off.height = h;
-    const offCtx = off.getContext('2d');
-    for (const p of fogPuffs) {
-      p.y += p.speedY; p.x += p.speedX;
-      const heightFade = Math.max(0, Math.min(1, (p.y - h * 0.55) / (h * 0.25)));
-      const alpha = p.opacity * heightFade;
-      if (alpha <= 0) continue;
-      const grad = offCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
-      grad.addColorStop(0, `rgba(${p.hue}, ${alpha})`);
-      grad.addColorStop(0.5, `rgba(${p.hue}, ${alpha * 0.45})`);
-      grad.addColorStop(1, `rgba(${p.hue}, 0)`);
-      offCtx.fillStyle = grad; offCtx.beginPath(); offCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); offCtx.fill();
-    }
-    offCtx.globalCompositeOperation = 'destination-in';
-    const mask = offCtx.createLinearGradient(0, h * 0.42, 0, h * 0.72);
-    mask.addColorStop(0, 'rgba(0,0,0,0)'); mask.addColorStop(1, 'rgba(0,0,0,1)');
-    offCtx.fillStyle = mask; offCtx.fillRect(0, 0, w, h);
-    fogCtx.drawImage(off, 0, 0); requestAnimationFrame(animateFog);
-  }
-  resizeFog(); seedFog(14); animateFog();
-  window.addEventListener('resize', () => {
-    const oldW2 = fogCanvas.width || window.innerWidth;
-    const oldH2 = fogCanvas.height || window.innerHeight;
-    resizeFog();
-    const rx2 = fogCanvas.width / oldW2; const ry2 = fogCanvas.height / oldH2;
-    for (const p of fogPuffs) { p.x *= rx2; p.y *= ry2; }
-  });
 
   let players = [];
   const statusOrder = { adp: { accepted:0, denied:1, pending:2 }, pda: { pending:0, denied:1, accepted:2 } };
@@ -399,7 +318,11 @@
     const showAll = activeFilters.size === 0;
     let arr = players.filter(p => showAll || activeFilters.has(p.status));
     const { col, dir } = currentSort;
-    if (!col) return arr;
+    if (!col) {
+      const order = statusOrder.adp;
+      arr.sort((a,b) => order[a.status] - order[b.status]);
+      return arr;
+    }
     if (col === 'name') {
       arr.sort((a,b) => dir==='asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name));
     } else {
@@ -413,8 +336,8 @@
     const tbody = document.getElementById('tbody');
     const sorted = getSorted();
     tbody.innerHTML = sorted.map((p, i) => `
-      <tr style="animation-delay:${i*0.05}s">
-        <td style="color:var(--muted)">${String(i+1).padStart(2,'0')}</td>
+      <tr style="animation-delay:${i*0.04}s">
+        <td>${String(i+1).padStart(2,'0')}</td>
         <td>${p.name}</td>
         <td>${badgeMap[p.status] || badgeMap.pending}</td>
       </tr>
@@ -450,7 +373,7 @@
     } catch (err) {
       document.getElementById('tbody').innerHTML = `
         <tr class="error-row">
-          <td colspan="3">⚠ Could not load data <button onclick="loadPlayers()" style="margin-left:12px; font-family:'VT323',monospace; font-size:16px; color:var(--accent2); background:rgba(6,182,212,0.1); border:1px solid rgba(6,182,212,0.3); border-radius:4px; padding:4px 14px; cursor:pointer; letter-spacing:1px;">Retry</button></td>
+          <td colspan="3">Could not load data <button onclick="loadPlayers()" style="margin-left:12px; font-family:inherit; font-size:13px; color:var(--link); background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:4px 14px; cursor:pointer;">Retry</button></td>
         </tr>`;
     }
   }

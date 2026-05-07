@@ -1,118 +1,102 @@
-ATM STAR — STYLE GUIDE
-======================
-Last updated: 2026-05-04
+XANTHO HUB — STYLE GUIDE
+=========================
+Last updated: 2026-05-07
 
 
 COLOR PALETTE
 -------------
---bg        #0d0f1a     Deep space dark (page background base)
---panel     #131626     Slightly lighter dark (unused reserve)
---border    #2a2f50     Subtle borders between rows/elements
---accent    #7c3aed     Purple — primary accent, headings, hover glows
---accent2   #06b6d4     Cyan — secondary accent, subtitles, links
---star      #f59e0b     Gold/amber — titles, star particles, active nav
---pending   #94a3b8     Slate gray — pending status, neutral indicators
---denied    #ef4444     Red — denied/error states
---accepted  #22c55e     Green — accepted/success states
---text      #e2e8f0     Light gray — main body text
---muted     #64748b     Dim gray — secondary text, descriptions, footer
+--bg        #101116     Base dark (nav background, fallback)
+--surface   #18191f     Card/panel backgrounds
+--border    #26272e     Borders between elements
+--accent    #d4a053     Warm gold — hero title, active nav, sort indicators
+--link      #7ba4c9     Muted blue — links, interactive text
+--text      #d4d4d8     Light gray — main body text
+--muted     #6b6d76     Dim gray — secondary text, descriptions, footer
+--pending   #94a3b8     Slate — pending status (tracker only)
+--denied    #ef4444     Red — denied/error states (tracker only)
+--accepted  #22c55e     Green — accepted/success states (tracker only)
 
-Background uses a layered gradient:
-  1. Radial purple glow from bottom center
-  2. Radial gold glow from bottom center (subtle)
-  3. Linear gradient dark-to-darker, bottom-to-top
+Background uses a single linear gradient:
+  linear-gradient(180deg, #0a0c16 0%, #0d0f1a 40%, #111228 100%)
 
 
 TYPOGRAPHY
 ----------
-Headings / Labels:
-  font-family: 'Press Start 2P', monospace
-  Typical sizes: 8-10px for nav/labels, 28px for hero title
-  Always uppercase, letter-spacing: 2-4px
-  Used sparingly — only for titles, labels, nav items
+Font: Outfit (Google Fonts)
+  Weights: 300 (light), 400 (regular), 500 (medium), 600 (semibold)
 
-Body / Content:
-  font-family: 'VT323', monospace
-  Base size: 20px on body
-  Used for all readable text, descriptions, table data
+  Hero title:     600, 40px (28px mobile)
+  Page headings:  600, 24px (20px mobile)
+  Card titles:    600, 14px
+  Nav links:      500, 13px (12px mobile)
+  Section labels: 500, 13px, uppercase, letter-spacing 0.5px
+  Body text:      400, 16px (base)
+  Descriptions:   300, 14-15px
+  Footer:         300, 13px
 
 Google Fonts import:
-  https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap
+  https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap
+
+Fallback stack: 'Outfit', -apple-system, sans-serif
 
 
-CARD PATTERN (glassmorphism)
-----------------------------
-  background: rgba(0,0,0, 0.18–0.40)    (darker = more contrast)
-  backdrop-filter: blur(6px)
-  -webkit-backdrop-filter: blur(6px)
-  border: 1px solid rgba(255,255,255, 0.06–0.07)
-  border-radius: 14-16px
-  padding: 24-44px
+CARD PATTERN
+------------
+  background: var(--surface)
+  border: 1px solid var(--border)
+  border-radius: 10px
 
 Interactive cards add:
-  transition: border-color 0.25s, background 0.25s, transform 0.2s
-  On hover: border-color: var(--accent), background: rgba(124,58,237,0.10), translateY(-4px)
+  transition: border-color 0.15s
+  On hover: border-color: #3a3b44
 
 
-BADGE PATTERN (status indicators)
-----------------------------------
+BADGE PATTERN (status indicators, tracker only)
+------------------------------------------------
   display: inline-flex; align-items: center; gap: 6px
-  padding: 2px 12px; border-radius: 3px
-  font-size: 18px; letter-spacing: 1px
+  padding: 2px 10px; border-radius: 4px
+  font-size: 13px; font-weight: 500
 
-  Pending:   bg rgba(148,163,184,0.1), border rgba(148,163,184,0.3), color var(--pending)
-  Denied:    bg rgba(239,68,68,0.1),   border rgba(239,68,68,0.3),   color var(--denied)
-  Accepted:  bg rgba(34,197,94,0.1),   border rgba(34,197,94,0.3),   color var(--accepted)
+  Pending:   bg rgba(148,163,184,0.08), border rgba(148,163,184,0.2), color var(--pending)
+  Denied:    bg rgba(239,68,68,0.08),   border rgba(239,68,68,0.2),   color var(--denied)
+  Accepted:  bg rgba(34,197,94,0.08),   border rgba(34,197,94,0.2),   color var(--accepted)
 
 
 NAV BAR
 -------
   Sticky, top: 0, z-index: 10
-  background: rgba(13,15,26, 0.80), backdrop-filter: blur(12px)
-  border-bottom: 1px solid rgba(255,255,255,0.05)
-  Links use 'Press Start 2P' at 8px, letter-spacing: 2px, inline-flex
-  Active link: gold (--star) with gold border/glow
-  Hover: cyan (--accent2) with cyan border/glow
-  Separators: 1px solid rgba(255,255,255,0.08) between each link (nav a + a)
-  External links (YouTube, Discord): include a 13x13 SVG external-link icon
-    - Icon is stroke-based, currentColor, opacity 0.5
-    - Positioned to the right of link text via inline-flex gap: 6px
+  background: var(--bg), border-bottom: 1px solid var(--border)
+  Links: Outfit 500 at 13px, mixed case, letter-spacing 0.5px
+  Active link: var(--accent)
+  Hover: var(--text)
+  External links: include an 11x11 SVG external-link icon (stroke, currentColor, opacity 0.4)
 
 
-SECTION LABELS
---------------
-  Format: // LABEL TEXT //
-  Font: 'Press Start 2P' at 10px
-  Color: var(--accent) with purple text-shadow
-  letter-spacing: 4px, centered
+SECTION HEADINGS
+----------------
+  Font: Outfit 500, 13px, uppercase, letter-spacing 0.5px
+  Color: var(--muted)
+  No decorators (no // wrapping)
 
 
 ANIMATIONS & EFFECTS
 --------------------
 Glitter stars (canvas):
-  Gold-toned star characters (✦) falling slowly
-  Colors cycle through: #f59e0b, #fcd34d, #f97316, #fbbf24, #fde68a
-  Soft glow via shadowBlur, gentle rotation and drift
-  ~18 seeded on load, new ones spawn at 10% chance per frame
-
-Fog (canvas):
-  Radial gradient puffs rising from bottom
-  Two hue sets: purple (100,60,220) and warm (180,100,20)
-  Fades out above ~55% viewport height
-  Spawns slowly (4% chance per frame)
-  Initial seed puffs are visible on load (placed near bottom edge)
-  New puffs spawn fully offscreen (y = viewport + radius) and rise into view
+  Gold-toned star characters falling slowly
+  Colors: #f59e0b, #fcd34d, #fbbf24
+  Small (8-18px), slow (0.15-0.45 speed), low opacity (0.15-0.45)
+  No glow/shadow — just flat colored text
+  6 seeded on load, 3% chance to spawn per frame
+  No fog — stars only
 
 Entrance animations:
-  heroFade — card slides up and fades in over 0.8s
-  cardFade — hub cards stagger in with 0.1s delay increments
-  fadeIn   — table rows slide in from left (tracker)
+  fadeIn — table rows slide in from left (tracker), 0.3s ease
 
 
 LAYOUT
 ------
-  Max content width: 700-820px, centered with margin: 0 auto
-  Section padding: ~60-64px bottom between sections
+  Max content width: 640-680px, centered with margin: 0 auto
+  Section padding: ~48-72px bottom between sections
   Responsive breakpoints:
     600px — smaller fonts, 2-column card grid, compact padding
     380px — single-column card grid
@@ -120,21 +104,22 @@ LAYOUT
 
 SPACING CONVENTIONS
 -------------------
-  Nav padding: 12px 20px
-  Hero card padding: 44px 52px (desktop), 30px 24px (mobile)
-  Hub cards padding: 30px 18px
-  Updates card padding: 28px 32px
-  Section gap between label and content: 24px
-  Footer padding: 12px 20px 40px
+  Nav: padding 14px 20px per link, no outer padding
+  Hero: 96px top, 72px bottom (64px/48px on mobile)
+  Hub cards: 36px 20px
+  Table cells: 10px 16px
+  Stats chips: 6px 14px
+  Updates card: 24px 28px
+  Footer: 48px bottom
 
 
 NOTES FOR FUTURE EDITS
 -----------------------
-  - All colors are CSS custom properties in :root — change once, updates everywhere
-  - Fonts load from Google Fonts — swap the import URL to change typefaces
-  - New pages should include the same nav, canvas effects, and :root variables
-  - The hub grid auto-fits cards — just add more <a class="hub-card"> elements
+  - All colors are CSS custom properties in :root
+  - Single font (Outfit) loads from Google Fonts
+  - New pages should include the same nav, canvas, and :root variables
+  - The hub grid auto-fits cards — just add more elements
   - The updates section is a placeholder — replace the inner content freely
-  - HTML comment in index.html marks where to add future sections
   - External links use target="_blank" rel="noopener"
   - Internal links are relative paths (e.g., tracker.html)
+  - No glassmorphism, no text-shadow glows, no backdrop-filter on content
