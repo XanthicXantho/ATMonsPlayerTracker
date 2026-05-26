@@ -17,13 +17,13 @@
     --accent: #d4a053;
     --accent-dim: rgba(212,160,83,0.25);
     --accent-glow: rgba(212,160,83,0.4);
-    --bg: #000000;
-    --bg-deep: #0a0a0f;
-    --bg-panel: #111118;
-    --border-ut: #ffffff;
+    --bg: #101116;
+    --surface: #18191f;
+    --border: #26272e;
     --text: #ffffff;
     --text-dim: #71717a;
     --text-body: #d4d4d8;
+    --muted: #6b6d76;
     --soul-red: #ff0000;
     --font-ut: 'Determination', monospace;
     --font-clean: 'Outfit', sans-serif;
@@ -58,11 +58,11 @@
     display: flex; justify-content: center; gap: 0;
     padding: 0;
     background: var(--bg);
-    border-bottom: 2px solid var(--border-ut);
+    border-bottom: 1px solid var(--border);
   }
   nav a {
     font-family: var(--font-ut);
-    font-size: 14px; color: var(--text-dim);
+    font-size: 14px; color: var(--muted);
     text-decoration: none; letter-spacing: 1px;
     padding: 14px 24px;
     transition: color 0.15s;
@@ -122,13 +122,13 @@
     gap: 12px;
   }
 
-  /* UT battle-box cards */
   .hub-card {
     display: flex; flex-direction: column;
     align-items: center; text-align: center;
     padding: 36px 20px;
-    background: var(--bg);
-    border: 3px solid var(--border-ut);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
     text-decoration: none; color: var(--text);
     transition: border-color 0.2s;
   }
@@ -137,6 +137,8 @@
     width: 40px; height: 40px;
     margin-bottom: 16px;
     display: flex; align-items: center; justify-content: center;
+    background: rgba(212,160,83,0.08);
+    border-radius: 8px;
     font-size: 18px; color: var(--accent);
   }
   .hub-card-title {
@@ -153,7 +155,7 @@
 
   /* YouTube card with playlist dropdown */
   .hub-card-yt { position: relative; padding: 0; overflow: visible; align-items: stretch; }
-  .hub-card-yt-wrap { display: flex; width: 100%; overflow: hidden; }
+  .hub-card-yt-wrap { display: flex; width: 100%; border-radius: 9px; overflow: hidden; }
   .hub-card-yt .hub-card-main {
     display: flex; flex-direction: column;
     align-items: center; text-align: center;
@@ -165,7 +167,7 @@
     display: flex; align-items: center; justify-content: center;
     width: 36px; flex-shrink: 0;
     background: none; border: none;
-    border-left: 2px solid var(--border-ut);
+    border-left: 1px solid var(--border);
     color: var(--text-dim); cursor: pointer; padding: 0;
     transition: color 0.15s;
   }
@@ -174,17 +176,19 @@
   .yt-toggle .yt-chevron svg { width: 14px; height: 14px; fill: currentColor; }
   .yt-toggle.open .yt-chevron { transform: rotate(180deg); }
   .yt-playlists {
-    position: absolute; top: 100%; left: -3px; right: -3px; z-index: 10;
-    background: var(--bg);
-    border: none;
+    position: absolute; top: 100%; left: -1px; right: -1px; z-index: 10;
+    background: var(--surface);
+    border: none; border-radius: 0 0 10px 10px;
     max-height: 0; overflow: hidden;
     transition: max-height 0.25s ease;
   }
   .yt-playlists.open {
     max-height: 300px;
-    border: 3px solid var(--border-ut);
+    border: 1px solid var(--border);
     border-top: none;
   }
+  .hub-card-yt.dropdown-open { border-radius: 10px 10px 0 0; }
+  .hub-card-yt.dropdown-open .hub-card-yt-wrap { border-radius: 9px 9px 0 0; }
   .yt-playlists-inner { padding: 16px; text-align: center; }
   .yt-playlists-inner .yt-empty {
     font-family: var(--font-ut);
@@ -205,8 +209,9 @@
     margin-bottom: 16px;
   }
   .updates-card {
-    background: var(--bg);
-    border: 3px solid var(--border-ut);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
     padding: 24px 28px;
   }
   .updates-placeholder {
