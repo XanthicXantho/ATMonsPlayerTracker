@@ -1,20 +1,23 @@
 XANTHO HUB — STYLE GUIDE
 =========================
-Last updated: 2026-05-07
+Last updated: 2026-05-26
+
+Matches the Undertale-themed OBS stream overlay aesthetic.
 
 
 COLOR PALETTE
 -------------
---bg        #101116     Base dark (nav background, fallback)
---surface   #18191f     Card/panel backgrounds
---border    #26272e     Borders between elements
---accent    #d4a053     Warm gold — hero title, active nav, sort indicators
---link      #7ba4c9     Muted blue — links, interactive text
---text      #d4d4d8     Light gray — main body text
---muted     #6b6d76     Dim gray — secondary text, descriptions, footer
---pending   #94a3b8     Slate — pending status (tracker only)
---denied    #ef4444     Red — denied/error states (tracker only)
---accepted  #22c55e     Green — accepted/success states (tracker only)
+--accent        #d4a053     Warm gold — hero accent, active nav, card hover, separator
+--accent-dim    rgba(212,160,83,0.25)  Gold at 25% for gradient separator
+--accent-glow   rgba(212,160,83,0.4)   Gold at 40% for glow effects
+--bg            #000000     Pure black — card/nav backgrounds, UT battle-box fill
+--bg-deep       #0a0a0f     Near-black panel variant
+--bg-panel      #111118     Slightly lighter panel variant
+--border-ut     #ffffff     White — UT battle-box style borders
+--text          #ffffff     White — headings, titles
+--text-dim      #71717a     Dim gray — descriptions, secondary text
+--text-body     #d4d4d8     Light gray — body text
+--soul-red      #ff0000     Red — Undertale soul heart
 
 Background uses a single linear gradient:
   linear-gradient(180deg, #0a0c16 0%, #0d0f1a 40%, #111228 100%)
@@ -22,61 +25,70 @@ Background uses a single linear gradient:
 
 TYPOGRAPHY
 ----------
-Font: Outfit (Google Fonts)
-  Weights: 300 (light), 400 (regular), 500 (medium), 600 (semibold)
+Two fonts:
+  1. Determination (local woff2) — Undertale dialogue font
+     Used for: hero title, nav links, card titles, section labels, placeholder text
+  2. Outfit (Google Fonts) — clean sans-serif
+     Used for: body text, card descriptions
+     Weights: 300 (light), 400 (regular), 500 (medium), 600 (semibold)
 
-  Hero title:     600, 40px (28px mobile)
-  Page headings:  600, 24px (20px mobile)
-  Card titles:    600, 14px
-  Nav links:      500, 13px (12px mobile)
-  Section labels: 500, 13px, uppercase, letter-spacing 0.5px
-  Body text:      400, 16px (base)
-  Descriptions:   300, 14-15px
-  Footer:         300, 13px
+  Hero title:     Determination, 56px (36px mobile), letter-spacing 3px
+  Nav links:      Determination, 14px (12px mobile), letter-spacing 1px
+  Card titles:    Determination, 18px, letter-spacing 1px
+  Section labels: Determination, 16px, letter-spacing 1px
+  Descriptions:   Outfit 300, 14px
+  Body text:      Outfit 400, 16px (base)
+  Footer:         Outfit, 13px
 
-Google Fonts import:
+Font files:
+  determination.woff2 (local, repo root)
   https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap
 
-Fallback stack: 'Outfit', -apple-system, sans-serif
+Fallback stacks:
+  --font-ut:    'Determination', monospace
+  --font-clean: 'Outfit', sans-serif
 
 
-CARD PATTERN
-------------
-  background: var(--surface)
-  border: 1px solid var(--border)
-  border-radius: 10px
+CARD PATTERN (UT battle-box)
+-----------------------------
+  background: var(--bg)      (pure black)
+  border: 3px solid var(--border-ut)  (white)
+  border-radius: none (sharp corners)
 
 Interactive cards add:
-  transition: border-color 0.15s
-  On hover: border-color: #3a3b44
-
-
-BADGE PATTERN (status indicators, tracker only)
-------------------------------------------------
-  display: inline-flex; align-items: center; gap: 6px
-  padding: 2px 10px; border-radius: 4px
-  font-size: 13px; font-weight: 500
-
-  Pending:   bg rgba(148,163,184,0.08), border rgba(148,163,184,0.2), color var(--pending)
-  Denied:    bg rgba(239,68,68,0.08),   border rgba(239,68,68,0.2),   color var(--denied)
-  Accepted:  bg rgba(34,197,94,0.08),   border rgba(34,197,94,0.2),   color var(--accepted)
+  transition: border-color 0.2s
+  On hover: border-color: var(--accent) (gold)
 
 
 NAV BAR
 -------
   Sticky, top: 0, z-index: 10
-  background: var(--bg), border-bottom: 1px solid var(--border)
-  Links: Outfit 500 at 13px, mixed case, letter-spacing 0.5px
+  background: var(--bg), border-bottom: 2px solid var(--border-ut)
+  Links: Determination at 14px, letter-spacing 1px
   Active link: var(--accent)
   Hover: var(--text)
   External links: include an 11x11 SVG external-link icon (stroke, currentColor, opacity 0.4)
 
 
+HERO
+----
+  Red Undertale soul heart (CSS clip-path polygon) with soul-beat animation
+  Title in Determination font, 56px, uppercase, white
+  Followed by gold gradient separator (ut-sep)
+
+
+UT SEPARATOR
+------------
+  height: 1px
+  background: linear-gradient(90deg, transparent, var(--accent-dim) 20%, var(--accent) 50%, var(--accent-dim) 80%, transparent)
+  max-width: 680px, centered
+
+
 SECTION HEADINGS
 ----------------
-  Font: Outfit 500, 13px, uppercase, letter-spacing 0.5px
-  Color: var(--muted)
-  No decorators (no // wrapping)
+  Font: Determination, 16px, letter-spacing 1px
+  Color: var(--text-dim)
+  Prefixed with Undertale-style "* " asterisk
 
 
 ANIMATIONS & EFFECTS
@@ -85,30 +97,30 @@ Glitter stars (canvas):
   Gold-toned star characters falling slowly
   Colors: #f59e0b, #fcd34d, #fbbf24
   Small (8-18px), slow (0.15-0.45 speed), low opacity (0.15-0.45)
-  No glow/shadow — just flat colored text
+  No glow/shadow — flat colored text
   6 seeded on load, 3% chance to spawn per frame
-  No fog — stars only
 
-Entrance animations:
-  fadeIn — table rows slide in from left (tracker), 0.3s ease
+Soul heart:
+  soul-beat — scale 1 to 1.12, 2.5s ease-in-out infinite
+
+Entrance:
+  fade-up — opacity 0 + translateY(10px) to visible, 1.2s ease
 
 
 LAYOUT
 ------
-  Max content width: 640-680px, centered with margin: 0 auto
+  Max content width: 680px, centered with margin: 0 auto
+  Hub grid: 2 columns (1 column on mobile)
   Section padding: ~48-72px bottom between sections
-  Responsive breakpoints:
-    600px — smaller fonts, 2-column card grid, compact padding
-    380px — single-column card grid
+  Responsive breakpoint: 600px — smaller fonts, single-column, compact padding
 
 
 SPACING CONVENTIONS
 -------------------
-  Nav: padding 14px 20px per link, no outer padding
-  Hero: 96px top, 72px bottom (64px/48px on mobile)
+  Nav: padding 14px 24px per link, no outer padding
+  Hero: 96px top, 24px bottom (64px/20px on mobile)
+  UT separator: 48px bottom margin
   Hub cards: 36px 20px
-  Table cells: 10px 16px
-  Stats chips: 6px 14px
   Updates card: 24px 28px
   Footer: 48px bottom
 
@@ -116,10 +128,11 @@ SPACING CONVENTIONS
 NOTES FOR FUTURE EDITS
 -----------------------
   - All colors are CSS custom properties in :root
-  - Single font (Outfit) loads from Google Fonts
-  - New pages should include the same nav, canvas, and :root variables
+  - Two fonts: Determination (local) and Outfit (Google Fonts)
+  - Cards use UT battle-box style: black bg, white 3px border, sharp corners
   - The hub grid auto-fits cards — just add more elements
   - The updates section is a placeholder — replace the inner content freely
   - External links use target="_blank" rel="noopener"
-  - Internal links are relative paths (e.g., tracker.html)
+  - tracker.html still exists but is not linked from the main site
   - No glassmorphism, no text-shadow glows, no backdrop-filter on content
+  - No border-radius on content cards (UT style = sharp)

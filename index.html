@@ -6,48 +6,67 @@
 <title>Xantho</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #101116;
-    --surface: #18191f;
-    --border: #26272e;
-    --accent: #d4a053;
-    --link: #7ba4c9;
-    --text: #d4d4d8;
-    --muted: #6b6d76;
+  @font-face {
+    font-family: 'Determination';
+    src: url('determination.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
   }
+
+  :root {
+    --accent: #d4a053;
+    --accent-dim: rgba(212,160,83,0.25);
+    --accent-glow: rgba(212,160,83,0.4);
+    --bg: #000000;
+    --bg-deep: #0a0a0f;
+    --bg-panel: #111118;
+    --border-ut: #ffffff;
+    --text: #ffffff;
+    --text-dim: #71717a;
+    --text-body: #d4d4d8;
+    --soul-red: #ff0000;
+    --font-ut: 'Determination', monospace;
+    --font-clean: 'Outfit', sans-serif;
+  }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
+
   body {
     background: linear-gradient(180deg, #0a0c16 0%, #0d0f1a 40%, #111228 100%);
-    color: var(--text);
-    font-family: 'Outfit', -apple-system, sans-serif;
+    color: var(--text-body);
+    font-family: var(--font-clean);
     font-weight: 400;
     font-size: 16px;
     min-height: 100vh;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
   }
+
   #glitter-canvas {
     position: fixed; top: 0; left: 0;
     width: 100%; height: 100%;
     pointer-events: none; z-index: 0;
   }
+
   nav, .hero, .hub, .updates, .footer-section {
     position: relative; z-index: 1;
   }
 
+  /* ── Nav ── */
   nav {
     position: sticky; top: 0; z-index: 10;
     display: flex; justify-content: center; gap: 0;
     padding: 0;
     background: var(--bg);
-    border-bottom: 1px solid var(--border);
+    border-bottom: 2px solid var(--border-ut);
   }
   nav a {
-    font-weight: 500;
-    font-size: 13px; color: var(--muted);
-    text-decoration: none; letter-spacing: 0.5px;
-    padding: 14px 20px;
+    font-family: var(--font-ut);
+    font-size: 14px; color: var(--text-dim);
+    text-decoration: none; letter-spacing: 1px;
+    padding: 14px 24px;
     transition: color 0.15s;
-    display: inline-flex; align-items: center; gap: 5px;
+    display: inline-flex; align-items: center; gap: 6px;
   }
   nav a .ext-icon {
     width: 11px; height: 11px;
@@ -58,55 +77,83 @@
   nav a:hover { color: var(--text); }
   nav a.active { color: var(--accent); }
 
-  .hero { text-align: center; padding: 96px 20px 72px; }
+  /* ── Hero ── */
+  .hero {
+    text-align: center;
+    padding: 96px 20px 24px;
+    animation: fade-up 1.2s ease both;
+  }
+  .hero-channel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+  .hero-soul {
+    width: 20px;
+    height: 20px;
+    background: var(--soul-red);
+    clip-path: polygon(50% 100%, 0% 35%, 15% 0%, 50% 25%, 85% 0%, 100% 35%);
+    animation: soul-beat 2.5s ease-in-out infinite;
+    flex-shrink: 0;
+  }
   .hero-title {
-    font-weight: 600;
-    font-size: 40px; color: var(--text);
-    letter-spacing: -0.5px;
+    font-family: var(--font-ut);
+    font-size: 56px;
+    color: var(--text);
+    letter-spacing: 3px;
     line-height: 1.2;
   }
-  .hero-title span { color: var(--accent); }
-  .hero-sub {
-    margin-top: 12px;
-    color: var(--muted); font-size: 17px;
-    font-weight: 300;
+
+  /* ── UT separator ── */
+  .ut-sep {
+    height: 1px;
+    max-width: 680px;
+    margin: 0 auto 48px;
+    background: linear-gradient(90deg, transparent, var(--accent-dim) 20%, var(--accent) 50%, var(--accent-dim) 80%, transparent);
   }
 
+  /* ── Hub ── */
   .hub { max-width: 680px; margin: 0 auto; padding: 0 20px 72px; }
   .hub-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
+
+  /* UT battle-box cards */
   .hub-card {
     display: flex; flex-direction: column;
     align-items: center; text-align: center;
     padding: 36px 20px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
+    background: var(--bg);
+    border: 3px solid var(--border-ut);
     text-decoration: none; color: var(--text);
-    transition: border-color 0.15s;
+    transition: border-color 0.2s;
   }
-  .hub-card:hover { border-color: #3a3b44; }
+  .hub-card:hover { border-color: var(--accent); }
   .hub-icon {
     width: 40px; height: 40px;
     margin-bottom: 16px;
     display: flex; align-items: center; justify-content: center;
-    background: rgba(212,160,83,0.08);
-    border-radius: 8px;
     font-size: 18px; color: var(--accent);
   }
   .hub-card-title {
-    font-weight: 600;
-    font-size: 14px;
+    font-family: var(--font-ut);
+    font-size: 18px;
     color: var(--text);
-    margin-bottom: 4px;
+    margin-bottom: 6px;
+    letter-spacing: 1px;
   }
-  .hub-card-desc { font-size: 14px; color: var(--muted); font-weight: 300; }
+  .hub-card-desc {
+    font-family: var(--font-clean);
+    font-size: 14px; color: var(--text-dim); font-weight: 300;
+  }
 
+  /* YouTube card with playlist dropdown */
   .hub-card-yt { position: relative; padding: 0; overflow: visible; align-items: stretch; }
-  .hub-card-yt-wrap { display: flex; width: 100%; border-radius: 9px; overflow: hidden; }
+  .hub-card-yt-wrap { display: flex; width: 100%; overflow: hidden; }
   .hub-card-yt .hub-card-main {
     display: flex; flex-direction: column;
     align-items: center; text-align: center;
@@ -118,8 +165,8 @@
     display: flex; align-items: center; justify-content: center;
     width: 36px; flex-shrink: 0;
     background: none; border: none;
-    border-left: 1px solid var(--border);
-    color: var(--muted); cursor: pointer; padding: 0;
+    border-left: 2px solid var(--border-ut);
+    color: var(--text-dim); cursor: pointer; padding: 0;
     transition: color 0.15s;
   }
   .yt-toggle:hover { color: var(--text); }
@@ -127,58 +174,71 @@
   .yt-toggle .yt-chevron svg { width: 14px; height: 14px; fill: currentColor; }
   .yt-toggle.open .yt-chevron { transform: rotate(180deg); }
   .yt-playlists {
-    position: absolute; top: 100%; left: -1px; right: -1px; z-index: 10;
-    background: var(--surface);
-    border: none; border-radius: 0 0 10px 10px;
+    position: absolute; top: 100%; left: -3px; right: -3px; z-index: 10;
+    background: var(--bg);
+    border: none;
     max-height: 0; overflow: hidden;
     transition: max-height 0.25s ease;
   }
   .yt-playlists.open {
     max-height: 300px;
-    border: 1px solid var(--border);
+    border: 3px solid var(--border-ut);
     border-top: none;
   }
-  .hub-card-yt.dropdown-open { border-radius: 10px 10px 0 0; }
-  .hub-card-yt.dropdown-open .hub-card-yt-wrap { border-radius: 9px 9px 0 0; }
   .yt-playlists-inner { padding: 16px; text-align: center; }
   .yt-playlists-inner .yt-empty {
-    font-size: 14px; color: var(--muted); font-weight: 300;
+    font-family: var(--font-ut);
+    font-size: 14px; color: var(--text-dim);
     padding: 8px 0;
   }
 
-  .updates { max-width: 680px; margin: 0 auto; padding: 0 20px 72px; }
+  /* ── Updates ── */
+  .updates {
+    max-width: 680px; margin: 0 auto; padding: 0 20px 72px;
+    animation: fade-up 1.2s ease 0.3s both;
+  }
   .section-heading {
-    font-weight: 500; font-size: 13px;
-    color: var(--muted); letter-spacing: 0.5px;
-    text-transform: uppercase;
+    font-family: var(--font-ut);
+    font-size: 16px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
     margin-bottom: 16px;
   }
   .updates-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
+    background: var(--bg);
+    border: 3px solid var(--border-ut);
     padding: 24px 28px;
   }
   .updates-placeholder {
-    color: var(--muted); font-size: 15px;
-    text-align: center; font-weight: 300;
+    font-family: var(--font-ut);
+    color: var(--text-dim); font-size: 16px;
+    text-align: center;
   }
 
+  /* ── Footer ── */
   .footer-section {
     text-align: center;
     padding: 16px 20px 48px;
-    color: var(--muted); font-size: 13px;
+    color: var(--text-dim); font-size: 13px;
   }
 
+  /* ── Animations ── */
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes soul-beat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.12); }
+  }
+
+  /* ── Responsive ── */
   @media (max-width: 600px) {
-    .hero { padding: 64px 16px 48px; }
-    .hero-title { font-size: 28px; }
-    .hub-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .hero { padding: 64px 16px 20px; }
+    .hero-title { font-size: 36px; }
+    .hub-grid { grid-template-columns: 1fr; gap: 10px; }
     .hub-card { padding: 28px 14px; }
     nav a { font-size: 12px; padding: 12px 14px; }
-  }
-  @media (max-width: 380px) {
-    .hub-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -188,14 +248,18 @@
 
 <nav>
   <a href="./" class="active">Home</a>
-  <a href="tracker.html">Tracker</a>
   <a href="https://www.youtube.com/@Xantho6749" target="_blank" rel="noopener">YouTube<svg class="ext-icon" viewBox="0 0 18 18"><path d="M14 4L7 11"/><path d="M14 9V4H9"/><path d="M4 4H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-1"/></svg></a>
   <a href="https://discord.gg/hMpZFfnqh7" target="_blank" rel="noopener">Discord<svg class="ext-icon" viewBox="0 0 18 18"><path d="M14 4L7 11"/><path d="M14 9V4H9"/><path d="M4 4H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-1"/></svg></a>
 </nav>
 
 <section class="hero">
-  <div class="hero-title"><span>Xantho</span></div>
+  <div class="hero-channel">
+    <div class="hero-soul"></div>
+    <div class="hero-title">XANTHO</div>
+  </div>
 </section>
+
+<div class="ut-sep"></div>
 
 <section class="hub">
   <div class="hub-grid">
@@ -213,16 +277,10 @@
       </div>
       <div class="yt-playlists" id="yt-playlists">
         <div class="yt-playlists-inner">
-          <div class="yt-empty">Nothing here yet</div>
+          <div class="yt-empty">* Nothing here yet.</div>
         </div>
       </div>
     </div>
-
-    <a href="tracker.html" class="hub-card">
-      <div class="hub-icon">&#10022;</div>
-      <div class="hub-card-title">Tracker</div>
-      <div class="hub-card-desc">ATM invites</div>
-    </a>
 
     <a href="https://discord.gg/hMpZFfnqh7" target="_blank" rel="noopener" class="hub-card">
       <div class="hub-icon">&#9672;</div>
@@ -234,9 +292,9 @@
 </section>
 
 <section class="updates">
-  <div class="section-heading">Updates</div>
+  <div class="section-heading">* Updates</div>
   <div class="updates-card">
-    <div class="updates-placeholder">More content coming soon</div>
+    <div class="updates-placeholder">* More content coming soon.</div>
   </div>
 </section>
 
@@ -278,7 +336,7 @@
       ctx.font = `${f.size}px serif`;
       ctx.fillStyle = f.color;
       ctx.translate(f.x, f.y); ctx.rotate(f.rot);
-      ctx.fillText('✦', -f.size / 2, f.size / 2);
+      ctx.fillText('\u2726', -f.size / 2, f.size / 2);
       ctx.restore();
     }
     requestAnimationFrame(animateGlitter);
